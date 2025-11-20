@@ -742,6 +742,85 @@
             }
         }
 
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            transition: opacity 0.5s ease-out;
+        }
+
+        .loading-screen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-content {
+            text-align: center;
+            max-width: 400px;
+            padding: 2rem;
+        }
+
+        .loading-logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid var(--cyan);
+            box-shadow: 0 0 30px rgba(0, 217, 255, 0.5);
+            margin-bottom: 2rem;
+            object-fit: cover;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 0 0 30px rgba(0, 217, 255, 0.5);
+            }
+            50% { 
+                transform: scale(1.05);
+                box-shadow: 0 0 50px rgba(0, 217, 255, 0.8);
+            }
+        }
+
+        .loading-name {
+            color: var(--cyan);
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            text-shadow: 0 0 10px rgba(0, 217, 255, 0.5);
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border);
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--cyan), var(--green));
+            width: 1%;
+            transition: width 0.1s ease;
+            box-shadow: 0 0 10px rgba(0, 217, 255, 0.5);
+        }
+
+        .progress-text {
+            color: var(--green);
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
         /* Fade-in animation */
         .fade-in {
             opacity: 0;
@@ -756,6 +835,17 @@
     </style>
 </head>
 <body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-content">
+            <img src="https://agi-prod-file-upload-public-main-use1.s3.amazonaws.com/188d6784-6d6f-4e13-9577-473d17e30dfe" alt="Mohammad Furquan" class="loading-logo">
+            <h2 class="loading-name">Mohammad Furquan</h2>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <p class="progress-text" id="progressText">1%</p>
+        </div>
+    </div>
     <canvas id="matrix-canvas"></canvas>
 
     <!-- Navigation -->
@@ -1056,7 +1146,7 @@
                         <i class="fa-brands fa-github"></i>
                     </a>
                     <a href="https://x.com/Cyber_matri_x" target="_blank" class="social-link" aria-label="Twitter">
-                        <i class="fa-brands fa-x-twitter"></i>
+                        <i class="fa-brands fa-square-x-twitter"></i>
                     </a>
                     <a href="#" class="social-link" aria-label="TryHackMe">
                         <span style="font-size: 1.2rem;">🎯</span>
@@ -1080,7 +1170,7 @@
                 <i class="fa-brands fa-github"></i>
             </a>
             <a href="https://x.com/Cyber_matri_x" target="_blank" class="social-link" aria-label="Twitter">
-                <i class="fa-brands fa-x-twitter"></i>
+                <i class="fa-brands fa-square-x-twitter"></i>
             </a>
         </div>
     </footer>
@@ -1177,6 +1267,33 @@
             e.preventDefault();
             alert('Thank you for your message! This is a demo form. In production, this would send an email.');
             contactForm.reset();
+        });
+
+        // Loading Screen
+        window.addEventListener('load', () => {
+            const loadingScreen = document.getElementById('loadingScreen');
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            let progress = 1;
+            const duration = 3000; // 3 seconds
+            const steps = 100;
+            const interval = duration / steps;
+
+            const progressInterval = setInterval(() => {
+                progress++;
+                if (progress <= 100) {
+                    progressBar.style.width = progress + '%';
+                    progressText.textContent = progress + '%';
+                } else {
+                    clearInterval(progressInterval);
+                    setTimeout(() => {
+                        loadingScreen.classList.add('fade-out');
+                        setTimeout(() => {
+                            loadingScreen.style.display = 'none';
+                        }, 500);
+                    }, 300);
+                }
+            }, interval);
         });
     </script>
 </body>
